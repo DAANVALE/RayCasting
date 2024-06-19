@@ -1,6 +1,6 @@
 public class Block {
 
-    private int x, y;
+    public int x, y;
 
     public States state;
 

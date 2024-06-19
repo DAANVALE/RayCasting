@@ -54,7 +54,7 @@ public class Main {
             public void keyPressed(KeyEvent e) {
 
                 int keyCode = e.getKeyCode();
-                Player.movePlayer(keyCode);
+                paintPanel.movePlayerWithLimits(keyCode);
 
                 paintPanel.setSize(getPanelSize(frame));
                 paintPanel.drawPlayer(Player.dinamicArrow());

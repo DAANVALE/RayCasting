@@ -3,6 +3,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Point;
+import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 
 public class Paint extends JPanel {
@@ -354,7 +355,63 @@ public class Paint extends JPanel {
         blocks[x][y].changeState();
     }
 
-    public void movePlayerWithLimits() {
+    public void movePlayerWithLimits(int keyCode) {
+        int fixAngle = Player.angle + 30;
 
+        int new_position_x = Player.position_x;
+        int new_position_y = Player.position_y;
+
+        if (keyCode == KeyEvent.VK_W) { // Mover hacia adelante
+            new_position_x += 5 * Math.cos(Math.toRadians(fixAngle));
+            new_position_y += 5 * Math.sin(Math.toRadians(fixAngle));
+        } else if (keyCode == KeyEvent.VK_S) { // Mover hacia atrás
+            new_position_x -= 5 * Math.cos(Math.toRadians(fixAngle));
+            new_position_y -= 5 * Math.sin(Math.toRadians(fixAngle));
+        } else if (keyCode == KeyEvent.VK_D) { // Mover a la derecha
+            new_position_x += 5 * Math.cos(Math.toRadians(fixAngle + 90));
+            new_position_y += 5 * Math.sin(Math.toRadians(fixAngle + 90));
+        } else if (keyCode == KeyEvent.VK_A) { // Mover a la izquierda
+            new_position_x += 5 * Math.cos(Math.toRadians(fixAngle - 90));
+            new_position_y += 5 * Math.sin(Math.toRadians(fixAngle - 90));
+        } else if (keyCode == KeyEvent.VK_E) { // Rotar a la derecha
+            Player.angle += 20;
+            Player.angle = Player.angle % 360;
+        } else if (keyCode == KeyEvent.VK_Q) { // Rotar a la izquierda
+            Player.angle -= 20;
+            Player.angle = Player.angle % 360;
+        }else{
+            return;
+        }
+
+        if(new_position_x < 20){
+            new_position_x = 20;
+        }else if (new_position_x > 220){
+            new_position_x = 220;
+        }
+
+        if(new_position_y < 20){
+            new_position_y = 20;
+        }
+        else if (new_position_y > 220){
+            new_position_y = 220;
+        }
+
+        if (!isCollidingWithBlocks(new_position_x, new_position_y)) {
+            Player.position_x = new_position_x;
+            Player.position_y = new_position_y;
+        }
+
+    }
+
+    public boolean isCollidingWithBlocks(int xc, int yc){
+
+        int px = (xc - bufferSize) / bufferSize;
+        int py = (yc - bufferSize) / bufferSize;
+
+        if(blocks[px][py].state == Block.States.BLOCK){
+            return true;
+        }
+
+        return false;
     }
 }
