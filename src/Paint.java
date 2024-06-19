@@ -221,77 +221,6 @@ public class Paint extends JPanel {
         repaint();
     }
 
-    public void drawCircle(int xc, int yc, int radius) {
-        int x = 0;
-        int y = radius;
-        int p = 3 - 2 * radius;
-
-        drawCirclePointsOctant(xc, yc, x, y);
-
-        while (x <= y) {
-            x++;
-            if (p > 0) {
-                y--;
-                p = p + 4 * (x - y) + 10;
-            } else {
-                p = p + 4 * x + 6;
-            }
-            drawCirclePointsOctant(xc, yc, x, y);
-        }
-    }
-
-    public void drawElipse(int xc, int yc, int rx, int ry){
-        int x = 0;
-        int y = ry;
-        int rx2 = rx * rx;
-        int ry2 = ry * ry;
-        int d = 4 * ry2 - 4 * rx2 * ry + rx2;
-        int deltaE = 4 * ry2;
-        int deltaSE = 4 * ry2 - 2 * rx2 * ry + 2 * rx2;
-
-        drawCirclePointsQuadrant(xc, yc, x, y);
-
-        while (2 * ry2 * x < 2 * rx2 * y) {
-            if (d >= 0) {
-                y--;
-                d += deltaSE;
-                deltaSE += 2 * rx2;
-            }
-            x++;
-            d += deltaE;
-            deltaE += 2 * ry2;
-            drawCirclePointsQuadrant(xc, yc, x, y);
-        }
-
-        d = (int)(
-                ry2 * (x + 0.5) * (x + 0.5) +
-                        rx2 * (y - 1) * (y - 1) -
-                        rx2 * ry2
-        );
-
-        while (y >= 0) {
-            drawCirclePointsQuadrant(xc, yc, x, y);
-            if (d <= 0) {
-                x++;
-                d += 2 * ry2 * x + ry2;
-            }
-            y--;
-            d -= 2 * rx2 * y + rx2;
-        }
-    }
-
-    private void drawCirclePointsOctant(int xc, int yc, int x, int y) {
-        drawCirclePointsQuadrant(xc, yc, x, y);
-        drawCirclePointsQuadrant(xc, yc, y, x);
-    }
-
-    private void drawCirclePointsQuadrant(int xc, int yc, int x, int y){
-        putPixel(xc + x, yc + y); // Cuadrante 1
-        putPixel(xc - x, yc + y); // Cuadrante 2
-        putPixel(xc + x, yc - y); // Cuadrante 3
-        putPixel(xc - x, yc - y); // Cuadrante 4
-    }
-
     @Override
     public void paint(Graphics g) {
         super.paint(g);
@@ -341,8 +270,6 @@ public class Paint extends JPanel {
     public void changeBlocks(int px, int py){
         int x = (px - bufferSize) / bufferSize;
         int y = (py - bufferSize) / bufferSize;
-
-        System.out.println("x: " + x + " y: " + y + "\n");
 
         if(x < 0 || x >= 10){
             return;
@@ -404,14 +331,63 @@ public class Paint extends JPanel {
     }
 
     public boolean isCollidingWithBlocks(int xc, int yc){
-
         int px = (xc - bufferSize) / bufferSize;
         int py = (yc - bufferSize) / bufferSize;
+
+        if(px < 0 || px >= 10 || py < 0 || py >= 10){
+            return true;
+        }
 
         if(blocks[px][py].state == Block.States.BLOCK){
             return true;
         }
 
         return false;
+    }
+
+    public void rayCastThisS(){
+
+        int ListAngule = Player.angle;
+
+        double x0 = Player.position_x;
+        double y0 = Player.position_y;
+
+        int xc = (Player.position_x - bufferSize) / bufferSize;
+        int yc = (Player.position_y - bufferSize) / bufferSize;
+
+        double x1 = x0;
+        double y1 = y0;
+
+        for(int i = 0; i < 12; i++){
+            for(int j = 0; j < blocks[0].length; j++) {
+                x1 = (xc * bufferSize + bufferSize) + bufferSize * j * Math.cos(Math.toRadians(ListAngule + i * 5));
+                y1 = (yc * bufferSize + bufferSize) + bufferSize * j * Math.sin(Math.toRadians(ListAngule + i * 5));
+
+                x1 = x1 < bufferSize ? bufferSize : x1;
+                x1 = x1 >= blocks.length * bufferSize + bufferSize ? (blocks.length * bufferSize) + bufferSize : x1;
+                y1 = y1 < bufferSize ? bufferSize : y1;
+                y1 = y1 >= blocks.length * bufferSize + bufferSize ? (blocks.length * bufferSize) + bufferSize : y1;
+
+                int yc1 = (int)(y1 - bufferSize) / bufferSize;
+                int xc1 = (int)(x1 - bufferSize) / bufferSize;
+
+                if(xc1 < 0 || xc1 >= 10 || yc1 < 0 || yc1 >= 10){
+                    continue;
+                }
+
+                if(blocks[xc1][yc1].state == Block.States.BLOCK){
+                    break;
+                }
+
+            }
+
+//            int fx = (int)(x1 - bufferSize) / bufferSize;
+//            int fy = (int)(y1 - bufferSize) / bufferSize;
+//
+//            fx = fx * bufferSize + bufferSize;
+//            fy = fy * bufferSize + bufferSize;
+
+            drawLine((int) x0, (int) y0, (int)x1, (int)y1);
+        }
     }
 }

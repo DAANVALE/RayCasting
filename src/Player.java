@@ -3,6 +3,7 @@ import java.awt.event.KeyEvent;
 public class Player {
 
     public static int position_x = 25, position_y = 25;
+    public static Point3D point = new Point3D(position_x, 200, position_y);
     public static int angle = 240;
 
     public static double[][] arrow = {
@@ -11,6 +12,8 @@ public class Player {
             {0, 6}, // Cola izquierda
             {8, 6}  // Cola derecha
     };
+
+    public static double[][] getDinamicArrow;
 
     public static double[][] dinamicArrow(){
         double radians = Math.toRadians(angle);
@@ -44,6 +47,7 @@ public class Player {
             newArrow[i] = rotatedPoint;
         }
 
+        getDinamicArrow = newArrow;
         return newArrow;
     }
 

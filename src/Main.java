@@ -9,7 +9,7 @@ public class Main {
 
     JFrame frame = new JFrame();
     Paint3D paintPanel;
-    Point3D reference = new Point3D(150, 450, 50);
+    Point3D reference = new Point3D(0, 250, 350);
     int width = 1, height = 1;
 
     public Main() {
@@ -58,6 +58,7 @@ public class Main {
 
                 paintPanel.setSize(getPanelSize(frame));
                 paintPanel.drawPlayer(Player.dinamicArrow());
+                paintPanel.rayCastThisS();
                 paintPanel.repaint();
             }
         });
@@ -81,12 +82,14 @@ public class Main {
         });
 
         paintPanel.drawPlayer(Player.dinamicArrow());
+        paintPanel.rayCastThisS();
         frame.setVisible(true);
     }
 
     public void changeBlocks(){
         paintPanel.setSize(getPanelSize(frame));
         paintPanel.drawPlayer(Player.dinamicArrow());
+        paintPanel.rayCastThisS();
         paintPanel.repaint();
     }
 
